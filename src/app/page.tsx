@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import Hero from "@/components/organisms/Hero";
 
 export default function Home() {
   return (
-    <div>
-      <Button>Submit</Button>
+    <div className="px-32">
+      <Hero/>
     </div>
   );
 }
