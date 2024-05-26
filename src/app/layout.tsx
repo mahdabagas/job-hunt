@@ -1,8 +1,9 @@
-import Navbar from '@/components/ui/layouts/Navbar'
+import Navbar from '@/components/layouts/Navbar'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Epilogue } from 'next/font/google'
 import Image from 'next/image'
+import Footer from '@/components/layouts/Footer'
 
 const epilogue = Epilogue({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({
           </div>
           {children}
         </main>
+        <Footer/>
       </body>
     </html>
   )
