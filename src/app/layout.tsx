@@ -22,13 +22,6 @@ export default function RootLayout({
       <body className={epilogue.className}>
         <Navbar/>
         <main>
-          <div className='absolute w-2/3 h-screen top-0 right-0 -z-10'>
-            <Image
-              src='/images/pattern.png'
-              alt='/images/pattern.png'
-              fill
-            />
-          </div>
           {children}
         </main>
         <Footer/>
