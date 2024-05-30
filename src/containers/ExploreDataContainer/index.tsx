@@ -1,3 +1,4 @@
+import CompanyCard from "@/components/organisms/CompanyCard";
 import FormFilterDynamic from "@/components/organisms/FormFilterDynamic";
 import FormSearchDynamic from "@/components/organisms/FormSearchDynamic";
 import JobCard from "@/components/organisms/JobCard";
@@ -62,32 +63,33 @@ const ExploreDataContainer: FC<ExploreDataContainerProps> = ({
                 </div>
                 <div className="w-4/5">
                     <div className="mb-8">
-                        <div className="text-3xl font-semibold">All Jobs</div>
-                        <div className="text-muted-foreground">Showing 73 Result</div>
+                        <div className="text-3xl font-semibold">All {type === 'job' ? 'Jobs' : 'Companies'}</div>
+                        <div className="text-muted-foreground">Showing {data?.length} Result</div>
 
-                        <div className="grid grid-cols-1 gap-7">
+                        <div>
                             {loading ? (
                                 <div>Loading...</div>
                             ) : (
                                 <>
-                                {type === 'job' ? (
-                                    <>
-                                    {data?.map((item: any, i: number) => (
-                                        <JobCard
-                                            key={i}
-                                            {...item}
-                                        />
-                                    ))}
-                                    </>
-                                ) : (
-                                    <>
-                                    {data?.map((item: any, i: number) => (
-                                        <div key={i}>
-                                            Company Card
+                                    {type === 'job' ? (
+                                        <div className="grid grid-cols-1 gap-7">
+                                            {data?.map((item: any, i: number) => (
+                                                <JobCard
+                                                    key={i}
+                                                    {...item}
+                                                />
+                                            ))}
                                         </div>
-                                    ))}
-                                    </>
-                                )}
+                                    ) : (
+                                        <div className="grid grid-cols-3 gap-5">
+                                            {data?.map((item: any, i: number) => (
+                                                    <CompanyCard 
+                                                        key={i}
+                                                        {...item}
+                                                    />
+                                            ))}
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
