@@ -6,6 +6,8 @@ export type JobType = {
     location: string;
     desc: string;
     categories: string[];
+    needs: number;
+    applicants: number;
 }
 
 export type optionType = {

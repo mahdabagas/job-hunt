@@ -1,19 +1,30 @@
 import FormFilterDynamic from "@/components/organisms/FormFilterDynamic";
 import FormSearchDynamic from "@/components/organisms/FormSearchDynamic";
-import { filterFormType } from "@/types";
+import JobCard from "@/components/organisms/JobCard";
+import { JobType, filterFormType } from "@/types";
 import Image from "next/image";
 import { FC } from "react";
 
 interface ExploreDataContainerProps {
     formFilter?: any
     onSubmitFIlter: (val: any) => Promise<void>
-    filterForm: filterFormType[]
+    filterForm: filterFormType[],
+    loading: boolean,
+    title: string,
+    subtitle: string,
+    data: any[],
+    type: 'job' | 'company'
 }
  
 const ExploreDataContainer: FC<ExploreDataContainerProps> = ({
     formFilter,
     onSubmitFIlter,
-    filterForm
+    filterForm,
+    title,
+    subtitle,
+    loading,
+    data,
+    type
 }) => {
     return (
         <>
@@ -25,7 +36,7 @@ const ExploreDataContainer: FC<ExploreDataContainerProps> = ({
                         </span>
                         <div className="relative">
                             <span className="text-5xl font-semibold text-primary">
-                                dream job
+                                {title}
                             </span>
                             <div className="absolute top-10 w-[220px] h-10">
                                 <Image 
@@ -38,7 +49,7 @@ const ExploreDataContainer: FC<ExploreDataContainerProps> = ({
                         </div>
                     </div>
                     <div className="text-center text-gray-500">
-                        Find your next career at companies like HubSpot, Nike, and Dropbox
+                        {subtitle}
                     </div>
                 </div>
                 <div>
@@ -54,8 +65,31 @@ const ExploreDataContainer: FC<ExploreDataContainerProps> = ({
                         <div className="text-3xl font-semibold">All Jobs</div>
                         <div className="text-muted-foreground">Showing 73 Result</div>
 
-                        <div>
-                            job Card
+                        <div className="grid grid-cols-1 gap-7">
+                            {loading ? (
+                                <div>Loading...</div>
+                            ) : (
+                                <>
+                                {type === 'job' ? (
+                                    <>
+                                    {data?.map((item: any, i: number) => (
+                                        <JobCard
+                                            key={i}
+                                            {...item}
+                                        />
+                                    ))}
+                                    </>
+                                ) : (
+                                    <>
+                                    {data?.map((item: any, i: number) => (
+                                        <div key={i}>
+                                            Company Card
+                                        </div>
+                                    ))}
+                                    </>
+                                )}
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
