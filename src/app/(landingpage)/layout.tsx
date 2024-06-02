@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Epilogue } from 'next/font/google'
 import Footer from '@/components/layouts/Footer'
 import { Toaster } from '@/components/ui/toaster'
+import AuthProvider from '@/providers/AuthProvider'
 
 const epilogue = Epilogue({ subsets: ['latin'] })
 
@@ -20,12 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={epilogue.className}>
-        <Navbar/>
-        <main>
-          {children}
-        </main>
-        <Footer/>
-        <Toaster/>
+        <AuthProvider>
+          <Navbar/>
+          <main>
+            {children}
+          </main>
+          <Footer/>
+          <Toaster/>
+        </AuthProvider>
       </body>
     </html>
   )
