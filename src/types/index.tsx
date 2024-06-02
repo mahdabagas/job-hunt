@@ -28,3 +28,9 @@ export type CompanyType = {
     description: string;
     categories: string;
 }
+
+export type companyJobType = {
+    id: string,
+    name: string,
+    totalJobs: number
+}
