@@ -2,6 +2,7 @@ import '../globals.css'
 import type { Metadata } from 'next'
 import { Epilogue } from 'next/font/google'
 import Image from 'next/image'
+import { Toaster } from '@/components/ui/toaster'
 
 const epilogue = Epilogue({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function AuthRootLayout({
             </div>
           </div>
         </main>
+        <Toaster/>
       </body>
     </html>
   )

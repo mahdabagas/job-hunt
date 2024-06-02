@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { formSignUpSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,10 +19,31 @@ interface SignUpPageProps {
 const SignUpPage: FC<SignUpPageProps> = () => {
     const form = useForm<z.infer<typeof formSignUpSchema>>({
         resolver: zodResolver(formSignUpSchema)
-    })
+    });
 
-    const onSubmit = (val: z.infer<typeof formSignUpSchema>) => {
-        console.log(val);
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const onSubmit = async (val: z.infer<typeof formSignUpSchema>) => {
+        try {
+            await fetch('/api/user', {
+                method: "POST",
+                headers: {'Content-type' : 'application/json'},
+                body: JSON.stringify(val)
+            });
+
+            toast({
+                title: 'Success',
+                description: 'Create account success'
+            });
+
+            router.push('/signin')
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Please Try Again'
+            })
+        }
     }
 
     return (
