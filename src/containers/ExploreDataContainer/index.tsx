@@ -13,7 +13,7 @@ interface ExploreDataContainerProps {
     loading: boolean,
     title: string,
     subtitle: string,
-    data: any[],
+    data: any[] | undefined,
     type: 'job' | 'company'
 }
  

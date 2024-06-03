@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import bcrypt from "bcryptjs"
+import { optionType } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -25,4 +26,17 @@ export async function fetcher<JSON = any>(
   const res = await fetch(input, init);
 
   return res.json() as Promise<JSON>
+}
+
+export const parsingCategoriesOptions = (data: any, isLoading: boolean, error: any) => {
+  if (!isLoading && !error && data) {
+    return data.map((item: any) => {
+      return {
+        id: item.id,
+        label: item.name
+      } as optionType
+    }) as optionType[]
+  }
+
+  return [];
 }
