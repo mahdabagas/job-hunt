@@ -1,15 +1,16 @@
 import { Badge } from "@/components/ui/badge";
-import { JobType } from "@/types";
+import { JobType, categoryJobType } from "@/types";
 import Image from "next/image";
 import { FC } from "react";
 
 interface JobItemProps extends JobType {}
  
-const JobItem: FC<JobItemProps> = ({categories, desc, image, jobType, location, name, type}) => {
+const JobItem: FC<JobItemProps> = ({categories, desc, image, jobType, location, name, type, skills}) => {
+    
     return ( 
         <div className="border border-border p-6 cursor-pointer">
             <div className="flex flex-row justify-between items-start">
-                <Image src={image} alt={image} width={48} height={48} />
+                <Image src={image} alt={image} width={48} height={48} /> 
                 <span className="px-4 py-1 text-xs border font-semibold text-primary border-primary">
                     {jobType}
                 </span>
@@ -19,17 +20,14 @@ const JobItem: FC<JobItemProps> = ({categories, desc, image, jobType, location, 
                 <div className="text-muted-foreground mb-3">
                     {type} . {location}
                 </div>
-                <div className="text-muted-foreground h-12 line-clamp-2 text-ellipsis">
-                    {desc}
-                </div>
+                <div className="text-muted-foreground h-12 line-clamp-2 text-ellipsis" dangerouslySetInnerHTML={{ __html: desc}}/>
             </div>
             <div className="space-x-2">
-                {categories.map((item: string, i: number) => (
+                {skills.map((item: string, i: number) => (
                     <Badge 
-                        key={i}
+                        key={item + i}
                         variant="outline"
-                        className="rounded border-primary bg-primary/5 text-primary"
-                    >
+                        className="rounded border-primary bg-primary/5 text-primary">
                         {item}
                     </Badge>
                 ))}

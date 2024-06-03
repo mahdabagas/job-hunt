@@ -30,8 +30,6 @@ const SignInPage: FC<SignInPageProps> = () => {
             ...val,
             redirect: false
         })
-        
-        console.log(authenticated);
 
         if (authenticated?.error) {
             toast({

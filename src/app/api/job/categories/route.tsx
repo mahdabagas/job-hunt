@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
-import { companyJobType } from "@/types";
+import { categoryJobType } from "@/types";
 
 export async function GET() {
     const categories = await prisma.categoryJob.findMany({
@@ -17,7 +17,7 @@ export async function GET() {
         id : item.id,
         name: item.name,
         totalJobs: item._count.Job
-    })) as companyJobType[];
+    })) as categoryJobType[];
 
     return NextResponse.json(parseCategories);
 }
