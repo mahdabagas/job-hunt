@@ -28,11 +28,16 @@ export async function fetcher<JSON = any>(
   return res.json() as Promise<JSON>
 }
 
-export const parsingCategoriesOptions = (data: any, isLoading: boolean, error: any) => {
+export const parsingCategoriesOptions = (
+    data: any, 
+    isLoading: boolean, 
+    error: any,
+    isIndustry?: boolean
+  ) => {
   if (!isLoading && !error && data) {
     return data.map((item: any) => {
       return {
-        id: item.id,
+        id: isIndustry ? item.name : item.id,
         label: item.name
       } as optionType
     }) as optionType[]
