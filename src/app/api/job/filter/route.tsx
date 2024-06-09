@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
     const parseJobs: JobType[] = await Promise.all(
         jobs.map(async (item: any) => { 
-            imageName = item.Company?.CompanyOverview?.[0].image;
+            imageName = item.Company?.CompanyOverview?.[0]?.image;
 
             if (imageName) {
                 imageUrl = await supabasePublicUrl(imageName, 'company');

@@ -10,11 +10,11 @@ import { FC } from "react";
 interface JobCardProps extends JobType {
     
 }
- 
-const JobCard: FC<JobCardProps> = ({ applicants, categories, image, name, jobType, location, needs, type }) => {
+
+const JobCard: FC<JobCardProps> = ({ applicants, categories, image, name, jobType, location, needs, type, id }) => {
     const router = useRouter();
     return (
-        <div onClick={() => router.push('/detail/job/1')} className="w-full border mb-5 p-6 border-border flex flex-row justify-between items-center">
+        <div onClick={() => router.push('/detail/job/' + id)} className="w-full border mb-5 p-6 border-border flex flex-row justify-between items-center">
             <div className="flex flex-row items-start gap-6">
                 <div>
                     <Image 
