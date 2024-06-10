@@ -33,8 +33,6 @@ export async function GET(request: Request) {
         }
     })
 
-    console.log(companies);
-
     if (!companies) return [];
 
     let imageName: string;

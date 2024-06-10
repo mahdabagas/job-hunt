@@ -41,7 +41,7 @@ const Navbar : FC<NavbarProps> = ({}) => {
                 ) : (
                     <>
                         <Button variant='link' onClick={() => router.push('/signin')}>Login</Button>
-                        <Button>Sign Up</Button>
+                        <Button onClick={() => router.push('/signup')}>Sign Up</Button>
                     </>
                 )}
             </div>

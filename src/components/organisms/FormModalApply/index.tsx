@@ -41,14 +41,11 @@ const FormModalApply: FC<FormModalApplyProps> = ({image, roles, location, jobTyp
     const router = useRouter();
     const isApplyVal = isApply!! === 1;
 
-    console.log(isApply);
-
     const form = useForm<z.infer<typeof formApplySchema>>({
         resolver: zodResolver(formApplySchema)
     })
 
     const onSubmit = async (val: z.infer<typeof formApplySchema>) => {
-        console.log(session);
         try {
             const {filename, error} = await supabaseUploadFile(val.resume, "applicant");
 
@@ -91,7 +88,6 @@ const FormModalApply: FC<FormModalApplyProps> = ({image, roles, location, jobTyp
             })
 
         } catch (error) {
-            console.log(error);
             toast({
                 title: 'Errorr',
                 description: 'Please Try Again '

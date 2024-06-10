@@ -9,7 +9,7 @@ import prisma from "../../../../../../lib/prisma";
 import { supabasePublicUrl } from "@/lib/supabase";
 import { dateFormat } from "@/lib/utils";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 async function getDetailJob(id: string) {
     const session = await getServerSession(authOptions);
@@ -37,6 +37,7 @@ async function getDetailJob(id: string) {
     let imageUrl;
     const applicants = data?.applicants || 0;
     const needs = data?.needs || 0;
+    const benefits: any = data?.benefits;
     
     if (data?.Company?.CompanyOverview[0]?.image){
         imageUrl = await supabasePublicUrl(
@@ -52,24 +53,23 @@ async function getDetailJob(id: string) {
         image: imageUrl, 
         applicants, 
         needs,
+        benefits,
         isApply: session ? isApply : 0
     };
 }
  
 const DetailJobPage = async ({params} : {params: {id: string}}) => {
     const data = await getDetailJob(params.id);
-
-    console.log(data);
     
     return (
         <>
             <div className="bg-slate-100 px-32 pt-10 pb-14">
                 <div className="inline-flex gap-3 text-sm text-muted-foreground">
                     <Link className="hover:underline hover:text-black" href="/">Home</Link> / {" "}
-                    <Link className="hover:underline hover:text-black" href="/find-comapnies">Companies</Link> / {" "}
+                    <Link className="hover:underline hover:text-black" href="/find-companies">Companies</Link> / {" "}
                     <Link 
                         className="hover:underline hover:text-black" 
-                        href={`/detail/company/${data?.Company?.CompanyOverview?.[0]?.id}`}
+                        href={`/detail/company/${data?.Company?.CompanyOverview?.[0]?.companyId}`}
                     >
                         {data?.Company?.CompanyOverview?.[0]?.name}
                     </Link> / {" "}

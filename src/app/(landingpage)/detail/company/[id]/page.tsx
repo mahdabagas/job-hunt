@@ -45,15 +45,13 @@ async function getDetailCompany(id: string) {
 const DetailCompanyPage = async ({params} : {params: {id: string}}) => {
     const data = await getDetailCompany(params.id);
 
-    console.log(data);
-
     return (
         <div>
             <div className="bg-slate-100 px-32 pt-16 pb-14">
                 <div className="inline-flex gap-3 text-sm text-muted-foreground">
                     <Link className="hover:underline hover:text-black" href="/">Home</Link> / {" "}
-                    <Link className="hover:underline hover:text-black" href="/find-comapnies">Companies</Link> / {" "}
-                    <Link className="hover:underline hover:text-black" href={`/detail/company/${data.id}`}>{data?.CompanyOverview?.[0]?.name}</Link> / {" "}
+                    <Link className="hover:underline hover:text-black" href="/find-companies">Companies</Link> / {" "}
+                    <Link className="hover:underline hover:text-black" href={`/detail/company/${data.id}`}>{data?.CompanyOverview?.[0]?.name}</Link>
                 </div>
 
                 <div>

@@ -2,13 +2,16 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { JobType } from "@/types";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FC } from "react";
 
 interface JobItemProps extends JobType {}
 
-const JobItem: FC<JobItemProps> = ({categories,  image, jobType, location, name, type, skills}) => {
+const JobItem: FC<JobItemProps> = ({categories,  image, jobType, location, name, type, skills, id}) => {
+    const router = useRouter();
+
     return (
-        <div className="border border-border p-8 flex flex-row items-start gap-6 cursor-pointer">
+        <div className="border border-border p-8 flex flex-row items-start gap-6 cursor-pointer" onClick={() => router.push(`/detail/job/${id}`)}>
             <div>
                 <Image src={image} alt={image} width={64} height={64} />
             </div>
