@@ -47,6 +47,6 @@ export const parsingCategoriesOptions = (
   return [];
 };
 
-export const dateFormat = (date: Date | string, format: string = 'DD MMM YYYY') => {
+export const dateFormat = (date: Date | string | undefined, format: string = 'DD MMM YYYY') => {
   return dayjs(date).format(format);
 }

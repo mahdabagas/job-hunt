@@ -8,8 +8,12 @@ import { BiCategory } from "react-icons/bi";
 import prisma from "../../../../../../lib/prisma";
 import { supabasePublicUrl } from "@/lib/supabase";
 import { dateFormat } from "@/lib/utils";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 async function getDetailJob(id: string) {
+    const session = await getServerSession(authOptions);
+
     const data = await prisma.job.findFirst({
         where: {
             id
@@ -24,11 +28,16 @@ async function getDetailJob(id: string) {
         }
     })
 
+    const isApply = await prisma.applicant.count({
+        where: {
+            userId: session?.user?.id
+        }
+    })
+
     let imageUrl;
     const applicants = data?.applicants || 0;
     const needs = data?.needs || 0;
-    let benefits = data?.benefits || [];
-
+    
     if (data?.Company?.CompanyOverview[0]?.image){
         imageUrl = await supabasePublicUrl(
             data?.Company?.CompanyOverview[0]?.image,
@@ -38,7 +47,13 @@ async function getDetailJob(id: string) {
         imageUrl = "/images/company2.png"
     }
 
-    return {...data, image: imageUrl, applicants, needs};
+    return {
+        ...data, 
+        image: imageUrl, 
+        applicants, 
+        needs,
+        isApply: session ? isApply : 0
+    };
 }
  
 const DetailJobPage = async ({params} : {params: {id: string}}) => {
@@ -75,7 +90,7 @@ const DetailJobPage = async ({params} : {params: {id: string}}) => {
                             </div>
                         </div>
                     </div>
-                    <FormModalApply />
+                    <FormModalApply id={data.id} location={data?.Company?.CompanyOverview?.[0]?.location} image={data?.image} jobType={data?.jobType} roles={data?.roles} isApply={data?.isApply} />
                 </div>
             </div>
             <div className="px-32 py-16 flex flex-row items-start gap-10">
