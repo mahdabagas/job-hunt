@@ -5,69 +5,67 @@ import { supabasePublicUrl } from "@/lib/supabase";
 import { CompanyType, JobType } from "@/types";
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
+    try {
+        const { searchParams } = new URL(request.url);
+        const filterCategory = searchParams.get('category')?.split(',').filter(Boolean) || [];
 
-    const filterCategory = searchParams.get('category') !== '' ? searchParams.get('category')?.split(',') : [];
-
-    const categoryQuery: Prisma.CompanyWhereInput = filterCategory && filterCategory.length > 0 ? {
-        CompanyOverview: {
-            every: {
-                industry: {
-                    in: filterCategory
+        const categoryQuery: Prisma.CompanyWhereInput = filterCategory.length > 0 ? {
+            CompanyOverview: {
+                every: {
+                    industry: {
+                        in: filterCategory
+                    }
                 }
             }
-        }
-    } : {};
+        } : {};
 
-    const companies = await prisma.company.findMany({
-        where: {...categoryQuery},
-        include: {
-            CompanyOverview: true,
-            CompanyTeam: true,
-            CompanySocialMedia: true,
-            _count: {
-                select: {
-                    Job: true
+        const companies = await prisma.company.findMany({
+            where: categoryQuery,
+            include: {
+                CompanyOverview: true,
+                CompanyTeam: true,
+                CompanySocialMedia: true,
+                _count: {
+                    select: {
+                        Job: true
+                    }
                 }
             }
+        });
+
+        if (!companies.length) {
+            return NextResponse.json([]);
         }
-    })
 
-    if (!companies) return [];
+        const parseCompanies = await Promise.all(
+            companies.map(async (item) => {
+                const companyDetail = item.CompanyOverview[0];
+                const imageName = companyDetail?.image;
+                const imageUrl = imageName ? await supabasePublicUrl(imageName, 'company') : '/images/company2.png';
 
-    let imageName: string;
-    let imageUrl: string;
+                const company: CompanyType = {
+                    id: item.id,
+                    name: companyDetail?.name,
+                    image: imageUrl,
+                    dateFounded: companyDetail?.dateFounded,
+                    description: companyDetail?.description,
+                    employee: companyDetail?.employee,
+                    industry: companyDetail?.industry,
+                    location: companyDetail?.location,
+                    techStack: companyDetail?.techStack,
+                    webiste: companyDetail?.website,
+                    sosmed: item.CompanySocialMedia[0],
+                    teams: item.CompanyTeam,
+                    totalJobs: item._count.Job
+                };
 
-    const parseCompanies: CompanyType[] = await Promise.all(
-        companies.map(async (item: any) => { 
-            imageName = item.CompanyOverview?.[0]?.image;
+                return company;
+            })
+        );
 
-            if (imageName) {
-                imageUrl = await supabasePublicUrl(imageName, 'company');
-            } else {
-                imageUrl = '/images/company2.png'
-            }
-            
-            const companyDetail = item?.CompanyOverview?.[0];
-
-            const company: CompanyType = {
-                id: item.id,
-                name: companyDetail?.name,
-                image: imageUrl,
-                dateFounded: companyDetail?.dateFounded,
-                description: companyDetail?.description,
-                employee: companyDetail?.employee,
-                industry: companyDetail?.industry,
-                location: companyDetail?.location,
-                techStack: companyDetail?.techStack,
-                webiste: companyDetail?.website,
-                sosmed: item?.CompanySosialMedia?.[0],
-                teams: item?.CompanyTeam,
-                totalJobs: item._count.Job
-            }
-
-            return company;
-        })
-    );
-    return NextResponse.json(parseCompanies);
+        return NextResponse.json(parseCompanies);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
 }

@@ -1,50 +1,51 @@
-import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import prisma from "../../../../../lib/prisma";
-import { JobType } from "@/types";
+import { NextResponse } from "next/server";
 import { supabasePublicUrl } from "@/lib/supabase";
+import { JobType } from "@/types";
 
 export async function GET() {
-    const jobs = await prisma.job.findMany({
-        take: 6,
-        include: {
-            CategoryJob: true,
-            Company: {
-                include: {
-                    CompanyOverview: true
+    try {
+        const jobs = await prisma.job.findMany({
+            take: 6,
+            include: {
+                CategoryJob: true,
+                Company: {
+                    include: {
+                        CompanyOverview: true
+                    }
                 }
             }
+        });
+
+        if (!jobs || jobs.length === 0) {
+            return NextResponse.json([]);
         }
-    })
 
-    if (!jobs) return [];
+        const parseJobs = await Promise.all(
+            jobs.map(async (item) => {
+                const imageName = item.Company?.CompanyOverview?.[0]?.image;
+                const imageUrl = imageName ? await supabasePublicUrl(imageName, 'company') : '/images/company2.png';
 
-    let imageName: string;
-    let imageUrl: string;
+                return {
+                    id: item.id,
+                    applicants: item.applicants,
+                    categories: item.CategoryJob,
+                    desc: item.description,
+                    image: imageUrl,
+                    jobType: item.jobType,
+                    location: item.Company?.CompanyOverview?.[0]?.location,
+                    name: item.roles,
+                    needs: item.needs,
+                    type: item.CategoryJob?.name,
+                    skills: item.requiredSkils
+                };
+            })
+        );
 
-    const parseJobs: JobType[] = await Promise.all(
-        jobs.map(async (item: any) => { 
-            imageName = item.Company?.CompanyOverview?.[0]?.image;
-
-            if (imageName) {
-                imageUrl = await supabasePublicUrl(imageName, 'company');
-            } else {
-                imageUrl = '/images/company2.png'
-            }
-            
-        return ({
-            id: item?.id,
-            applicants: item?.applicants,
-            categories: item?.CategoryJob,
-            desc: item?.description,
-            image: imageUrl,
-            jobType: item?.jobType,
-            location: item?.Company?.CompanyOverview?.[0]?.location,
-            name: item?.roles,
-            needs: item?.needs,
-            type: item?.CategoryJob?.name,
-            skills: item.requiredSkils
-        })
-    }))
-
-    return NextResponse.json(parseJobs);
+        return NextResponse.json(parseJobs);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
 }
